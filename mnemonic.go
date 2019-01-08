@@ -88,6 +88,27 @@ func NewFromArrayOrDie(words []string) *Mnemonic {
 	}
 }
 
+func NewFromArray(words []string) (m *Mnemonic, err error) {
+	m = &Mnemonic{}
+	dict, err := DictionaryFromArray(words)
+	if err != nil {
+		return
+	}
+
+	size := dict.Size()
+	if size == 0 || size&(size-1) != 0 {
+		return m, errors.New(fmt.Sprintf("unsupported dictionary size %d; must be power of two", size))
+	}
+	var bits int
+	for ; size > 1; size >>= 1 {
+		bits++
+	}
+	return &Mnemonic{
+		dict:       dict,
+		wordLength: bits,
+	}, nil
+}
+
 // GenerateFromData generates a mnemonic from the provided data array
 func (m *Mnemonic) GenerateFromData(data []byte) ([]string, error) {
 	if len(data)%4 != 0 {

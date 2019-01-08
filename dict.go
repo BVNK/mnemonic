@@ -68,6 +68,16 @@ func DictionaryFromArrayOrDie(words []string) *Dictionary {
 	return d
 }
 
+// DictionaryFromArrayOrDie loads a wordlist from the provided array and panics on errors
+func DictionaryFromArray(words []string) (d *Dictionary, err error) {
+	d = &Dictionary{}
+
+	if err = d.LoadFromArray(words); err != nil {
+		return
+	}
+	return d, nil
+}
+
 // Size Fetch the size of the dictionary
 func (d Dictionary) Size() int {
 	return len(d.dict)
